@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack --watch"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +12,11 @@
   "type": "commonjs",
   "dependencies": {
     "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "nodemon-webpack-plugin": "^4.7.0",
+    "webpack": "^5.105.4",
+    "webpack-cli": "^7.0.2",
+    "webpack-node-externals": "^3.0.0"
   }
 }
