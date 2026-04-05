@@ -1,24 +1,15 @@
 const express = require('express')
-const app = express()   
+const app = express()
 const port = 3000
 
-app.get('/', (req, res) => {
-  res.send('GET /')
-})
+const userController = require('./controller/userController')
+const postController = require('./controller/postController')
 
-app.post('/', (req, res) => {
-  res.status(201).send('POST /')
-})
-
-app.put('/', (req, res) => {
-  res.send('PUT /')
-})
-
-app.delete('/', (req, res) => {
-  res.send('DELETE /')
-})
+//Coloquei o "userController" diretão assim, pois o codigo entendde que, a rota ficaria "/user/(qualqer rota dentro da controller)"
+app.use('/user', userController)
+app.use('/post', postController)
 
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Servidor rodando na porta ${port}`)
 })
