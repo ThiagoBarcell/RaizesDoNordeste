@@ -1,14 +1,15 @@
 
 const { Router } = require('express')
 const { signup } = require('./userService')
+const AUTH_COOKIE_NAME = 'authorization'
 const router = Router()
 
 router.post('/signup', (req, res) => {
   // basicamente, o 'answer' recebe o retorno da funcao signup e ja joga a resposta no send
   // to usando o signup direto assim, pois como usei chaves la em cima ao exportar, ele trouxe direto o metodo
   try {
-    const answer = signup(req.body)
-    res.send(answer)
+    const token = signup(req.body)
+    res.cookie(AUTH_COOKIE_NAME,token).status(201).send(token)
   } catch (err) {
     if (err.message === 'email_existente')
       res.status(400).send(err.message)
