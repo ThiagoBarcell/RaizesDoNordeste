@@ -1,11 +1,6 @@
-//Precisei importar ele pois será responsável por criar os tokens
-const {sign} = require('jsonwebtoken')
+const {generateAccessToken} = require('../../utils/auth')
 
-//To usando esse array para salvar os usuários
 let users = []
-
-//outra forma de criar funções, mais padrão, além da arrow function
-const generateAccessToken = (data) => sign(data, 'secret')
 
 const getUserByEmail = (searchEmail) => users.find((obj) => obj.email === searchEmail )
 
