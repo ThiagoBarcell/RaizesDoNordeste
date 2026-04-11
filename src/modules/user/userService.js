@@ -28,5 +28,6 @@ const login = (data) => {
 
 //Metodos para exportar ao chamar a classe
 module.exports = {
-    signup
+    signup,
+    login
 }
