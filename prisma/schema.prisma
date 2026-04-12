@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id       Int       @id @default(autoincrement())
+  nome     String    @unique
+  usuarios Usuario[]
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  roleId    Int
+  role      Role     @relation(fields: [roleId], references: [id])
+
+  pedidos   Pedido[]
+
+  criadoEm  DateTime @default(now())
+}
+
+model Unidade {
+  id        Int       @id @default(autoincrement())
+  nome      String
+  endereco  String?
+  ativo     Boolean   @default(true)
+
+  pedidos   Pedido[]
+  estoques  Estoque[]
+}
+
+model Produto {
+  id        Int       @id @default(autoincrement())
+  nome      String
+  descricao String?
+  preco     Float
+  ativo     Boolean   @default(true)
+
+  itens     PedidoItem[]
+  estoques  Estoque[]
+}
+
+model Estoque {
+  id         Int      @id @default(autoincrement())
+  produtoId  Int
+  unidadeId  Int
+  quantidade Int      @default(0)
+
+  produto    Produto  @relation(fields: [produtoId], references: [id])
+  unidade    Unidade  @relation(fields: [unidadeId], references: [id])
+
+  @@unique([produtoId, unidadeId])
+}
+
+model Pedido {
+  id         Int            @id @default(autoincrement())
+  usuarioId  Int
+  unidadeId  Int
+  canal      CanalPedido
+  status     StatusPedido   @default(AGUARDANDO_PAGAMENTO)
+  total      Float?
+
+  usuario    Usuario        @relation(fields: [usuarioId], references: [id])
+  unidade    Unidade        @relation(fields: [unidadeId], references: [id])
+  itens      PedidoItem[]
+  pagamento  Pagamento?
+
+  criadoEm   DateTime       @default(now())
+}
+
+model PedidoItem {
+  id             Int     @id @default(autoincrement())
+  pedidoId       Int
+  produtoId      Int
+  quantidade     Int
+  precoUnitario  Float
+
+  pedido         Pedido  @relation(fields: [pedidoId], references: [id])
+  produto        Produto @relation(fields: [produtoId], references: [id])
+}
+
+model Pagamento {
+  id        Int               @id @default(autoincrement())
+  pedidoId  Int               @unique
+  status    StatusPagamento
+  valor     Float
+
+  pedido    Pedido            @relation(fields: [pedidoId], references: [id])
+  criadoEm  DateTime          @default(now())
+}
+
+enum StatusPedido {
+  AGUARDANDO_PAGAMENTO
+  PAGO
+  EM_PREPARO
+  PRONTO
+  ENTREGUE
+  CANCELADO
+}
+
+enum CanalPedido {
+  APP
+  TOTEM
+  BALCAO
+  PICKUP
+  WEB
+}
+
+enum StatusPagamento {
+  PENDENTE
+  APROVADO
+  RECUSADO
+}
